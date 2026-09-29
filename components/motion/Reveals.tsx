@@ -29,6 +29,7 @@ export default function Reveals() {
       if (el.getClientRects().length) return true;
       gsap.set(el, { clearProps: "all", visibility: "visible", opacity: 1, clipPath: "none" });
       gsap.set(el.children, { opacity: 1, y: 0 });
+      gsap.set(el.querySelectorAll("img"), { opacity: 1 });
       return false;
     };
     const ctx = gsap.context(() => {
@@ -96,17 +97,30 @@ export default function Reveals() {
           opacity: 1,
           y: 0,
           duration: 0.9,
-          stagger: 0.08,
-          scrollTrigger: { trigger: el, start: "top 88%", once: true },
+          stagger: 0.07,
+          scrollTrigger: { trigger: el, start: "top 94%", once: true },
           clearProps: "transform",
         });
       });
 
+      // Photo reveal: the card box (tinted with the photo's own colour) is always there;
+      // the picture develops into it — a soft fade while its frame settles from a slight zoom.
+      // Scale goes on the <Pic> wrapper, never on the <img>, whose CSS hover transition
+      // would otherwise fight GSAP every frame (the old cause of lurching cards).
       gsap.utils.toArray<HTMLElement>("[data-reveal='mask']").filter(rendered).forEach((el) => {
-        const inner = el.querySelector("img");
-        const tl = gsap.timeline({ scrollTrigger: { trigger: el, start: "top 88%", once: true } });
-        tl.to(el, { clipPath: "inset(0% 0% 0% 0%)", duration: 1.2, ease: "expo.inOut" });
-        if (inner) tl.fromTo(inner, { scale: 1.18 }, { scale: 1, duration: 1.6, ease: "expo.out" }, 0);
+        const img = el.querySelector("img");
+        const frame = img?.parentElement;
+        if (!img || !frame) {
+          gsap.set(el, { opacity: 1 });
+          return;
+        }
+        const tl = gsap.timeline({ scrollTrigger: { trigger: el, start: "top 96%", once: true } });
+        tl.to(img, { opacity: 1, duration: 0.9, ease: "power2.out" }, 0).fromTo(
+          frame,
+          { scale: 1.06 },
+          { scale: 1, duration: 1.3, ease: "expo.out", clearProps: "transform" },
+          0,
+        );
       });
 
       mm.add("(min-width: 1024px)", () => {

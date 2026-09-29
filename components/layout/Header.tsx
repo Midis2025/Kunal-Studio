@@ -108,9 +108,9 @@ export default function Header({ menuImages }: { menuImages: Record<string, Phot
           }`}
         >
           <div
-            className={`relative flex items-center justify-between gap-6 border transition-[height,padding,background-color,border-color,backdrop-filter] duration-700 ease-[var(--ease-film)] ${
+            className={`relative flex items-center justify-between gap-6 border transition-[height,padding,background-color,border-color] duration-700 ease-[var(--ease-film)] ${
               compact
-                ? `h-14 px-4 backdrop-blur-md md:px-6 ${light ? "border-ivory/15 bg-night/80" : "border-ink/10 bg-ivory/85"}`
+                ? `h-14 px-4 md:px-6 ${light ? "border-ivory/15 bg-night/92" : "border-ink/10 bg-ivory/95"}`
                 : "h-[var(--header-h)] border-transparent bg-transparent px-[var(--gutter)]"
             }`}
           >

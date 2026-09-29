@@ -15,7 +15,7 @@ export default function PortfolioIndex({ cards, filters }: { cards: Card[]; filt
 
   return (
     <>
-      <div className="wrap sticky top-0 z-20 -mt-px flex items-center justify-between gap-4 border-y border-ink/10 bg-ivory/90 backdrop-blur-sm">
+      <div className="wrap sticky top-0 z-20 -mt-px flex items-center justify-between gap-4 border-y border-ink/10 bg-ivory/97">
         <div role="group" aria-label="Filter stories" className="no-scrollbar -mx-2 flex min-w-0 gap-1 overflow-x-auto py-2 sm:gap-4">
           {filters.map((f) => {
             const count = f.id === "all" ? cards.length : cards.filter((c) => c.categories.includes(f.id as Category)).length;

@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import Pic from "@/components/ui/Pic";
 import { gsap, useGsap } from "@/lib/gsap";
+import { useNear } from "@/lib/useNear";
 import type { Photo } from "@/lib/photos";
 
 export type Fragment = { p: Photo; caption: string };
@@ -13,6 +14,7 @@ export type Fragment = { p: Photo; caption: string };
  */
 export default function HorizontalGallery({ items }: { items: Fragment[] }) {
   const root = useRef<HTMLElement>(null);
+  const near = useNear(root);
 
   useGsap(
     () => {
@@ -96,7 +98,7 @@ export default function HorizontalGallery({ items }: { items: Fragment[] }) {
             // One shared height for every frame — widths follow each photograph's own ratio.
             <figure key={it.p.src} className="relative h-[64svh] shrink-0 snap-center overflow-hidden lg:h-[76vh]" style={{ aspectRatio: `${it.p.w} / ${it.p.h}` }}>
               <div data-drift className="absolute inset-y-0 -inset-x-[7%]">
-                <Pic p={it.p} fill sizes="(min-width: 1024px) 60vw, 90vw" className="h-full w-full" />
+                <Pic p={it.p} fill eager={near} sizes="(min-width: 1024px) 60vw, 90vw" className="h-full w-full" />
               </div>
               <figcaption className="label pointer-events-none absolute inset-x-0 bottom-0 flex gap-3 bg-gradient-to-t from-night/70 to-transparent px-4 pb-4 pt-10 text-ivory/90">
                 {it.caption}

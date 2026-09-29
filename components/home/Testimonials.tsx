@@ -35,6 +35,7 @@ export default function Testimonials({ voices }: { voices: Voice[] }) {
   const [playing, setPlaying] = useState(true);
   const [held, setHeld] = useState(false); // hover / focus inside
   const [visible, setVisible] = useState(false);
+  const [near, setNear] = useState(false);
   const reduced = useSyncExternalStore(subscribeMotion, prefersReducedMotion, () => false);
   const count = voices.length;
 
@@ -46,10 +47,22 @@ export default function Testimonials({ voices }: { voices: Voice[] }) {
     if (!el) return;
     const io = new IntersectionObserver(([e]) => setVisible(e.isIntersecting), { threshold: 0.35 });
     io.observe(el);
+    // Warm every backdrop a screen before arrival, so no plate is ever blank when it rotates in.
+    const nearIo = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setNear(true);
+          nearIo.disconnect();
+        }
+      },
+      { rootMargin: "100% 0px" },
+    );
+    nearIo.observe(el);
     const onVis = () => setVisible(document.visibilityState === "visible" && el.getBoundingClientRect().top < innerHeight);
     document.addEventListener("visibilitychange", onVis);
     return () => {
       io.disconnect();
+      nearIo.disconnect();
       document.removeEventListener("visibilitychange", onVis);
     };
   }, []);
@@ -108,8 +121,8 @@ export default function Testimonials({ voices }: { voices: Voice[] }) {
                 fill
                 sizes="100vw"
                 quality={60}
-                loading={i === 0 ? "eager" : "lazy"}
-                className={`object-cover opacity-45 mix-blend-multiply grayscale ${i === active && !reduced ? "animate-[kenburns_16s_ease-out_forwards]" : ""}`}
+                loading={near || i === 0 ? "eager" : "lazy"}
+                className={`object-cover opacity-30 grayscale will-change-transform ${i === active && !reduced ? "animate-[kenburns_16s_ease-out_forwards]" : ""}`}
                 style={{ objectPosition: x.image.pos ?? "50% 35%" }}
               />
             ) : (

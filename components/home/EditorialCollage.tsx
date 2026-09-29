@@ -36,7 +36,7 @@ export default function EditorialCollage({ items }: { items: CollageItem[] }) {
               fill
               sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
               className="aspect-[4/5] w-full lg:aspect-[3/4]"
-              imgClassName="transition-[transform,filter] duration-[1400ms] ease-[var(--ease-film)] grayscale-[0.35] group-hover:scale-[1.05] group-hover:grayscale-0"
+              imgClassName="transition-transform duration-[1400ms] ease-[var(--ease-film)] group-hover:scale-[1.05]"
             />
             <p className="label pointer-events-none absolute bottom-3 left-3 bg-ivory/90 px-2.5 py-1 text-ink md:bottom-4 md:left-4">{it.label}</p>
           </li>

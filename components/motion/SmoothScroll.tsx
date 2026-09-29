@@ -28,11 +28,21 @@ export default function SmoothScroll() {
 
   useEffect(() => {
     if (prefersReducedMotion()) return;
-    lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 0.9, anchors: { offset: -80 } });
+    // A slightly longer, exponential glide; native touch scrolling is left untouched.
+    lenis = new Lenis({
+      duration: 1.15,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      wheelMultiplier: 1,
+      touchMultiplier: 1,
+      smoothWheel: true,
+      anchors: { offset: -80 },
+    });
     lenis.on("scroll", ScrollTrigger.update);
     const tick = (t: number) => lenis?.raf(t * 1000);
     gsap.ticker.add(tick);
     gsap.ticker.lagSmoothing(0);
+    // Late-arriving web fonts change heading heights — re-measure every trigger once they land.
+    document.fonts?.ready.then(() => ScrollTrigger.refresh());
     return () => {
       gsap.ticker.remove(tick);
       lenis?.destroy();

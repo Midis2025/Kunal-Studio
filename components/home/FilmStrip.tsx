@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { useNear } from "@/lib/useNear";
 import Eyebrow from "@/components/ui/Eyebrow";
 import Lightbox from "@/components/ui/Lightbox";
 import Pic from "@/components/ui/Pic";
@@ -15,9 +16,11 @@ export default function FilmStrip({ frames }: { frames: (Photo & { caption: stri
   const [active, setActive] = useState<number | null>(null);
   const [open, setOpen] = useState<number | null>(null);
   const shown = active ?? 0;
+  const root = useRef<HTMLElement>(null);
+  const near = useNear(root);
 
   return (
-    <section data-theme="light" className="relative overflow-hidden bg-paper py-24 md:py-36" aria-labelledby="strip-title">
+    <section ref={root} data-theme="light" className="relative overflow-hidden bg-paper py-24 md:py-36" aria-labelledby="strip-title">
       <div className="wrap grid gap-8 md:grid-cols-12 md:items-end">
         <div className="md:col-span-7">
           <Eyebrow>Contact sheet</Eyebrow>
@@ -57,6 +60,7 @@ export default function FilmStrip({ frames }: { frames: (Photo & { caption: stri
                     <Pic
                       p={f}
                       fill
+                      eager={near}
                       sizes="(min-width: 768px) 18vw, 42vw"
                       className={`h-[56vw] sm:h-[38vw] md:h-[clamp(15rem,24vw,27rem)] transition-[filter,opacity] duration-700 ${
                         dim ? "opacity-55 saturate-[0.35]" : "opacity-100"
