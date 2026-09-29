@@ -1,0 +1,293 @@
+@import "tailwindcss";
+
+/* ──────────────────────────────────────────────────────────────
+   STUDIO KUNAL — design tokens
+   Warm editorial light, with deliberate dark cinematic moments.
+   ────────────────────────────────────────────────────────────── */
+
+@theme {
+  --color-ivory: #f7f5f0;
+  --color-paper: #efebe3;
+  --color-stone: #d8d2c8;
+  --color-ash: #5f5a52; /* muted body text — 6.3:1 on ivory */
+  --color-ink: #111111;
+  --color-night: #0c0b0a;
+  --color-wine: #7a3028;
+
+  --font-serif: var(--font-display), "Bodoni 72", "Didot", Georgia, serif;
+  --font-sans: var(--font-text), ui-sans-serif, system-ui, sans-serif;
+
+  --ease-film: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-curtain: cubic-bezier(0.76, 0, 0.24, 1);
+
+  --breakpoint-xs: 26rem;
+}
+
+:root {
+  --gutter: clamp(1rem, 3.2vw, 3rem);
+  --gap: clamp(6px, 0.7vw, 12px); /* the one gutter between photographs */
+  --header-h: 4.5rem;
+
+  /* Fluid type scale — every step is clamped so nothing clips at 320px */
+  --fs-mega: clamp(2.9rem, 12.5vw, 13.5rem);
+  --fs-display: clamp(2.5rem, 8vw, 8.75rem);
+  --fs-h2: clamp(2.1rem, 5.6vw, 5.75rem);
+  --fs-h3: clamp(1.55rem, 3vw, 2.75rem);
+  --fs-lead: clamp(1.2rem, 1.9vw, 1.7rem);
+  --fs-body: clamp(0.95rem, 1.05vw, 1.0625rem);
+  --fs-label: 0.6875rem;
+}
+
+@layer base {
+  html {
+    background: var(--color-ivory);
+    color: var(--color-ink);
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    font-family: var(--font-sans);
+    font-size: var(--fs-body);
+    line-height: 1.65;
+    background: var(--color-ivory);
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection {
+    background: var(--color-wine);
+    color: var(--color-ivory);
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    overflow-wrap: break-word;
+    text-wrap: balance;
+  }
+  p { text-wrap: pretty; }
+  img, video { max-width: 100%; }
+  :focus-visible {
+    outline: 1.5px solid currentColor;
+    outline-offset: 4px;
+    border-radius: 1px;
+  }
+  button { cursor: pointer; }
+  [hidden] { display: none !important; }
+}
+
+/* Lenis */
+html.lenis, html.lenis body { height: auto; }
+.lenis:not(.lenis-autoToggle).lenis-stopped { overflow: clip; }
+.lenis [data-lenis-prevent] { overscroll-behavior: contain; }
+
+@layer components {
+  .label {
+    font-family: var(--font-sans);
+    font-size: var(--fs-label);
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    line-height: 1.5;
+  }
+  .label-lg {
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .t-mega { font-size: var(--fs-mega); }
+  .t-display { font-size: var(--fs-display); }
+  .t-h2 { font-size: var(--fs-h2); }
+  .t-h3 { font-size: var(--fs-h3); line-height: 1.05; }
+  .t-lead {
+    font-family: var(--font-serif);
+    font-size: var(--fs-lead);
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+  }
+  .serif-i { font-style: italic; font-family: var(--font-serif); }
+
+  .wrap { padding-inline: var(--gutter); }
+  .measure { max-width: 34rem; }
+
+  /* Underline link that draws on hover */
+  .link-line {
+    background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
+    transition: background-size 0.6s var(--ease-film);
+    padding-bottom: 2px;
+  }
+  @media (hover: hover) {
+    .link-line:hover { background-size: 0% 1px; background-position: 100% 100%; }
+    .link-draw { background: linear-gradient(currentColor, currentColor) 0 100% / 0% 1px no-repeat; transition: background-size 0.6s var(--ease-film); padding-bottom: 2px; }
+    .link-draw:hover { background-size: 100% 1px; }
+  }
+
+  /* CTA — text + drawn arrow; 44px min touch target */
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.9em;
+    min-height: 44px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .cta .cta-arrow { transition: transform 0.6s var(--ease-film); }
+  @media (hover: hover) { .cta:hover .cta-arrow { transform: translateX(0.5em); } }
+
+  /* Line mask for split-text reveals (padding avoids clipping descenders) */
+  .line-mask { display: block; overflow: clip; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+  .line-mask > span { display: block; }
+
+  /* Film grain for dark cinematic sections */
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.07;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
+  }
+
+  .field {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid color-mix(in srgb, currentColor 35%, transparent);
+    padding: 0.85rem 0;
+    font-size: 1.05rem;
+    border-radius: 0;
+    transition: border-color 0.4s var(--ease-film);
+    min-height: 44px;
+  }
+  .field:focus { outline: none; border-bottom-color: currentColor; }
+  .field:focus-visible { outline: none; box-shadow: 0 1px 0 0 currentColor; }
+  select.field { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6' fill='none' stroke='%23111' /%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.25rem center; padding-right: 1.5rem; }
+}
+
+/* Home hero letterbox (units must stay svh/vw so GSAP can interpolate) */
+.hero { --vf-t: 21svh; --vf-b: 17svh; --vf-x: 4vw; --hero-from: inset(21svh 4vw 17svh 4vw); --hero-hidden: inset(83svh 4vw 17svh 4vw); }
+@media (min-width: 768px) { .hero { --vf-t: 15svh; --vf-b: 12svh; --vf-x: 5vw; --hero-from: inset(15svh 5vw 12svh 5vw); --hero-hidden: inset(88svh 5vw 12svh 5vw); } }
+
+html.intro .shutter { display: block; }
+html.intro { overflow: hidden; }
+
+/* Static viewfinder corners (hero) */
+.viewfinder-static {
+  --c: rgba(247, 245, 240, 0.85);
+  --l: 28px;
+  --w: 1px;
+  background:
+    linear-gradient(var(--c), var(--c)) top left / var(--l) var(--w),
+    linear-gradient(var(--c), var(--c)) top left / var(--w) var(--l),
+    linear-gradient(var(--c), var(--c)) top right / var(--l) var(--w),
+    linear-gradient(var(--c), var(--c)) top right / var(--w) var(--l),
+    linear-gradient(var(--c), var(--c)) bottom left / var(--l) var(--w),
+    linear-gradient(var(--c), var(--c)) bottom left / var(--w) var(--l),
+    linear-gradient(var(--c), var(--c)) bottom right / var(--l) var(--w),
+    linear-gradient(var(--c), var(--c)) bottom right / var(--w) var(--l);
+  background-repeat: no-repeat;
+}
+@keyframes rec { 0%, 100% { opacity: 1; } 50% { opacity: 0.15; } }
+
+.hero [data-frame] { clip-path: var(--hero-from); }
+html.js-motion .hero [data-frame] { clip-path: var(--hero-hidden); }
+html.js-motion .hero h1, html.js-motion .hero [data-chrome] { visibility: hidden; }
+
+/* Initial states for scroll reveals (only when JS motion is active) */
+html.js-motion [data-reveal="split"], html.js-motion [data-reveal="chars"] { visibility: hidden; }
+.split-char-mask { padding: 0.04em 0.06em 0.12em; margin: -0.04em -0.06em -0.12em; }
+html.js-motion [data-reveal="fade"] { opacity: 0; transform: translateY(32px); }
+html.js-motion [data-reveal="stagger"] > * { opacity: 0; transform: translateY(24px); }
+html.js-motion [data-reveal="mask"] { clip-path: inset(100% 0% 0% 0%); }
+.split-line-mask { padding: 0.02em 0.14em 0.16em; margin: -0.02em -0.14em -0.16em; }
+
+/* Custom cursor only when a fine pointer exists */
+@media (hover: hover) and (pointer: fine) {
+  html.has-cursor, html.has-cursor a, html.has-cursor button, html.has-cursor [data-cursor] { cursor: none; }
+  html.has-cursor input, html.has-cursor textarea, html.has-cursor select { cursor: auto; }
+}
+
+/* Viewfinder: camera crop-marks that settle into the corners on hover / focus */
+.viewfinder { position: relative; }
+.viewfinder::after {
+  --c: rgba(247, 245, 240, 0.92);
+  --l: 22px;
+  --w: 1px;
+  content: "";
+  position: absolute;
+  inset: 14px;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(1.06);
+  transition: opacity 0.5s var(--ease-film), transform 0.8s var(--ease-film);
+  background:
+    linear-gradient(var(--c), var(--c)) top left / var(--l) var(--w),
+    linear-gradient(var(--c), var(--c)) top left / var(--w) var(--l),
+    linear-gradient(var(--c), var(--c)) top right / var(--l) var(--w),
+    linear-gradient(var(--c), var(--c)) top right / var(--w) var(--l),
+    linear-gradient(var(--c), var(--c)) bottom left / var(--l) var(--w),
+    linear-gradient(var(--c), var(--c)) bottom left / var(--w) var(--l),
+    linear-gradient(var(--c), var(--c)) bottom right / var(--l) var(--w),
+    linear-gradient(var(--c), var(--c)) bottom right / var(--w) var(--l);
+  background-repeat: no-repeat;
+}
+@media (hover: hover) {
+  .viewfinder:hover::after { opacity: 1; transform: scale(1); }
+}
+.viewfinder:focus-visible::after { opacity: 1; transform: scale(1); }
+
+/* Cursor states */
+.cursor-shape {
+  width: 12px; height: 12px;
+  transform: translate(-50%, -50%);
+  transition: width 0.45s var(--ease-film), height 0.45s var(--ease-film), background-color 0.3s, border-color 0.3s;
+}
+.cursor-label { opacity: 0; transition: opacity 0.25s; letter-spacing: 0.18em; font-size: 0.625rem; }
+.cursor[data-state="link"] .cursor-shape { width: 44px; height: 44px; }
+.cursor[data-state="view"], .cursor[data-state="play"], .cursor[data-state="drag"], .cursor[data-state="open"] { mix-blend-mode: normal; }
+.cursor[data-state="view"] .cursor-shape, .cursor[data-state="play"] .cursor-shape,
+.cursor[data-state="drag"] .cursor-shape, .cursor[data-state="open"] .cursor-shape {
+  width: 88px; height: 88px; background: var(--color-ivory); border-color: var(--color-ivory); color: var(--color-ink);
+}
+.cursor[data-state="view"] .cursor-label, .cursor[data-state="play"] .cursor-label,
+.cursor[data-state="drag"] .cursor-label, .cursor[data-state="open"] .cursor-label { opacity: 1; }
+
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Reduced motion: no transforms, no smooth scroll, instant reveals */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@keyframes kenburns { from { transform: scale(1.02); } to { transform: scale(1.12); } }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+.marquee-run { animation: marquee linear infinite; }
+@keyframes grow { from { width: 0%; } to { width: 100%; } }
+@keyframes lbIn { from { opacity: 0; transform: scale(0.985); } to { opacity: 1; transform: none; } }
+
+/* Film negative strip — sprocket holes top and bottom */
+.filmbase { position: relative; background-color: #17130f; }
+.filmbase::before, .filmbase::after {
+  content: ""; position: absolute; left: 0; right: 0; height: 9px; pointer-events: none;
+  background: repeating-linear-gradient(90deg, transparent 0 12px, rgba(247,245,240,.82) 12px 22px, transparent 22px 36px);
+  -webkit-mask: linear-gradient(#000 0 0); border-radius: 2px;
+}
+.filmbase::before { top: 12px; }
+.filmbase::after { bottom: 12px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero { height: 100svh; }
+}
